@@ -171,9 +171,10 @@ triggers a completion immediately."
 (defun company-go--insert-arguments (meta)
   "Insert arguments when META is a function or a method."
   (when (string-match "^func\\s *[^(]+\\(.*\\)" meta)
-    (let ((args (company-go--extract-arguments (match-string 1 meta))))
+    (let ((args (company-go--extract-arguments (replace-regexp-in-string "!.*?!" ""  (match-string 1 meta)))))
       (insert args)
       (company-template-c-like-templatify args))))
+
 
 (defun company-go--extract-arguments (str)
   "Extract arguments with parentheses from STR."
@@ -198,7 +199,11 @@ triggers a completion immediately."
       meta
     (save-match-data
       (and (string-match "\\w+ \\w+\\(.+\\)" meta)
-           (match-string 1 meta)))))
+           (replace-regexp-in-string "!.*?!" "" meta)
+           ;;meta
+           ))))
+
+
 
 (defun company-go--in-num-literal-p ()
   "Returns t if point is in a numeric literal."
